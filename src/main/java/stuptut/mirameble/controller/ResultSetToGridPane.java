@@ -5,6 +5,7 @@ import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -12,7 +13,8 @@ import java.sql.SQLException;
 
 public class ResultSetToGridPane {
 
-    public static void populateGridPane(ResultSet rs, GridPane gridPane) {
+    public static void populateGridPane(ResultSet rs, GridPane gridPane, Stage stage)
+    {
         try {
             // Clear any existing content from the GridPane
             gridPane.getChildren().clear();
@@ -42,8 +44,11 @@ public class ResultSetToGridPane {
                 }
                 row++;
             }
-
-        } catch (SQLException e) {
+            gridPane.getParent().requestLayout();
+            stage.sizeToScene();
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
         }
     }

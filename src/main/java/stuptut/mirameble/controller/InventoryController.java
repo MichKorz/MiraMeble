@@ -35,54 +35,74 @@ public class InventoryController extends Controller {
     @Override
     public void Initialize(String accessLevel)
     {
-        refreshTable("SELECT ID, name, manufacturer, count FROM inventory JOIN products ON ID_product = ID", tableInventory);
-        refreshTable("SELECT * FROM products", tableProducts);
+        refresh();
     }
 
     @FXML
     void addInventory()
     {
+        Platform.runLater(() -> stage.sizeToScene());
+        stage.sizeToScene();
         new Thread(() ->
         {
-            setFlag(true); // Flag for letting the query do its job in peace
-
-            String name = nameField.getText();
-            String manufacturer = manufacturerField.getText();
-            String countText = countField.getText();
-            int count;
-
-            try
+            if (mainApp.stageLocks.get(stage).tryLock())
             {
-                count = Integer.parseInt(countText);
-            }
-            catch (NumberFormatException e)
-            {
-                Platform.runLater(() -> infoArea.setText("Incorrect input " + countText + " for field count"));
-                setFlag(false);
-                return;
-            }
+                setFlags(true); // Flag for letting the query do its job in peace
+
+                String name = nameField.getText();
+                String manufacturer = manufacturerField.getText();
+                String countText = countField.getText();
+                int count;
+
+                try
+                {
+                    count = Integer.parseInt(countText);
+                }
+                catch (NumberFormatException e)
+                {
+                    Platform.runLater(() -> infoArea.setText("Incorrect input " + countText + " for field count"));
+                    return;
+                }
+                finally
+                {
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                }
 
 
-            String query = "CALL add_inventory(?, ?, ?)";
+                String query = "CALL add_inventory(?, ?, ?)";
 
-            try (PreparedStatement stmt = connection.prepareStatement(query))
-            {
-                stmt.setString(1, name); // Set the name parameter
-                stmt.setString(2, manufacturer); // Set the manufacturer parameter
-                stmt.setInt(3, count); // Set the name parameter
-                int rowsAffected = stmt.executeUpdate();
-                Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
-            }
-            catch (SQLException e)
-            {
-                Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
-            }
-            finally
-            {
-                refreshTable("SELECT ID, name, manufacturer, count FROM inventory JOIN products ON ID_product = ID", tableInventory);
-                setFlag(false);
+                try (PreparedStatement stmt = connection.prepareStatement(query))
+                {
+                    stmt.setString(1, name); // Set the name parameter
+                    stmt.setString(2, manufacturer); // Set the manufacturer parameter
+                    stmt.setInt(3, count); // Set the name parameter
+                    int rowsAffected = stmt.executeUpdate();
+                    Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
+                }
+                catch (SQLException e)
+                {
+                    Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
+                }
+                finally
+                {
+                    mainApp.refreshWindows();
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                }
             }
         }).start();
+    }
+
+    @Override
+    public void refresh()
+    {
+        if (mainApp.stageLocks.get(stage).tryLock())
+        {
+            refreshTable("SELECT ID, name, manufacturer, count FROM inventory JOIN products ON ID_product = ID", tableInventory);
+            refreshTable("SELECT * FROM products", tableProducts);
+            mainApp.stageLocks.get(stage).unlock();
+        }
     }
 
     private void refreshTable(String query, GridPane gridPane)
@@ -90,12 +110,12 @@ public class InventoryController extends Controller {
 
         new Thread(() ->
         {
-            setFlag(true); // Flag for letting the query do its job in peace
+            setFlags(true); // Flag for letting the query do its job in peace
 
             try (PreparedStatement stmt = connection.prepareStatement(query))
             {
                 ResultSet rs = stmt.executeQuery();
-                Platform.runLater(() -> ResultSetToGridPane.populateGridPane(rs, gridPane));
+                Platform.runLater(() -> ResultSetToGridPane.populateGridPane(rs, gridPane, stage));
             }
             catch (SQLException e)
             {
@@ -103,7 +123,7 @@ public class InventoryController extends Controller {
             }
             finally
             {
-                setFlag(false);
+                setFlags(false);
             }
         }).start();
     }

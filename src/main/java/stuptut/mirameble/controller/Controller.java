@@ -1,5 +1,6 @@
 package stuptut.mirameble.controller;
 
+import javafx.stage.Stage;
 import stuptut.mirameble.app.MainApp;
 
 import java.sql.Connection;
@@ -8,6 +9,7 @@ public class Controller
 {
     Connection connection;
     MainApp mainApp;
+    Stage stage;
 
     public void setConnection(Connection connection)
     {
@@ -19,7 +21,12 @@ public class Controller
         this.mainApp = mainApp;
     }
 
-    void setFlag(boolean value)
+    public void setStage(Stage stage)
+    {
+        this.stage = stage;
+    }
+
+    void setFlags(boolean value)
     {
         synchronized (mainApp.queryRunning) // TODO fix that perhaps???
         {
@@ -27,5 +34,7 @@ public class Controller
         }
     }
 
-    public void Initialize(String accessLevel){};
+    public void Initialize(String accessLevel){}
+
+    public void refresh(){}
 }

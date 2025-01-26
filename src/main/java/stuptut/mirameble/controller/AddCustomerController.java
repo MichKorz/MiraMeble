@@ -24,7 +24,7 @@ public class AddCustomerController extends Controller
     @Override
     public void Initialize(String accessLevel)
     {
-        refreshTable();
+        refresh();
     }
 
     @FXML
@@ -32,41 +32,56 @@ public class AddCustomerController extends Controller
     {
         new Thread(() ->
         {
-            setFlag(true); // Flag for letting the query do its job in peace
+            if (mainApp.stageLocks.get(stage).tryLock())
+            {
+                setFlags(true); // Flag for letting the query do its job in peace
 
-            String email = emailField.getText();
-            String query = "CALL add_client(?)";
+                String email = emailField.getText();
+                String query = "INSERT INTO clients (email) VALUES (?)";
 
-            try (PreparedStatement stmt = connection.prepareStatement(query))
-            {
-                stmt.setString(1, email); // Set the email parameter
-                int rowsAffected = stmt.executeUpdate();
-                Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
-            }
-            catch (SQLException e)
-            {
-                Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
-            }
-            finally
-            {
-                refreshTable();
-                setFlag(false);
+                try (PreparedStatement stmt = connection.prepareStatement(query))
+                {
+                    stmt.setString(1, email); // Set the email parameter
+                    int rowsAffected = stmt.executeUpdate();
+                    Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
+                }
+                catch (SQLException e)
+                {
+                    Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
+                }
+                finally
+                {
+                    mainApp.refreshWindows();
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                }
             }
         }).start();
 
+    }
+
+    @FXML
+    public void refresh()
+    {
+        if (mainApp.stageLocks.get(stage).tryLock())
+        {
+            refreshTable();
+            stage.sizeToScene();
+            mainApp.stageLocks.get(stage).unlock();
+        }
     }
 
     private void refreshTable()
     {
         new Thread(() ->
         {
-            setFlag(true); // Flag for letting the query do its job in peace
+            setFlags(true); // Flag for letting the query do its job in peace
             String query = "SELECT * FROM clients";
 
             try (PreparedStatement stmt = connection.prepareStatement(query))
             {
                 ResultSet rs = stmt.executeQuery();
-                Platform.runLater(() -> ResultSetToGridPane.populateGridPane(rs, tableClients));
+                Platform.runLater(() -> ResultSetToGridPane.populateGridPane(rs, tableClients, stage));
             }
             catch (SQLException e)
             {
@@ -74,7 +89,7 @@ public class AddCustomerController extends Controller
             }
             finally
             {
-                setFlag(false);
+                setFlags(false);
             }
         }).start();
     }

@@ -8,19 +8,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="291.0" prefWidth="459.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stuptut.mirameble.controller.AddCustomerController">
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stuptut.mirameble.controller.AddCustomerController">
    <children>
-      <HBox prefHeight="0.0" prefWidth="459.0">
+      <HBox>
          <children>
-            <TextField fx:id="emailField" prefHeight="25.0" prefWidth="477.0" promptText="Client's email" />
-            <Button fx:id="addButton" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="224.0" text="Add new Client" />
+            <TextField fx:id="emailField" promptText="Client's email" />
+            <Button fx:id="addButton" mnemonicParsing="false" onAction="#addUser"  text="Add new Client" />
          </children>
       </HBox>
-      <GridPane fx:id="tableClients" prefHeight="232.0" prefWidth="459.0">
+      <GridPane fx:id="tableClients" >
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" />
         </columnConstraints>
       </GridPane>
-      <TextArea fx:id="infoArea" editable="false" prefHeight="11.0" prefWidth="459.0" />
+      <TextArea fx:id="infoArea" editable="false" />
    </children>
 </VBox>
