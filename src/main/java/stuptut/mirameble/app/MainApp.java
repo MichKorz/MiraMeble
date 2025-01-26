@@ -31,9 +31,9 @@ public class MainApp extends Application
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/stuptut/mirameble/view/login.fxml"));
             Scene scene = new Scene(loader.load());
 
-            //Connection connection = DatabaseService.getConnection("auth", "password");
+            Connection connection = DatabaseService.getConnection("auth", "auth");
             Controller controller = loader.getController();
-            //controller.setConnection(connection);
+            controller.setConnection(connection);
             controller.setMainApp(this);
 
             primaryStage.setScene(scene);
@@ -72,16 +72,16 @@ public class MainApp extends Application
 
     public void setupUser(String accessLevel)
     {
-        String user = "Crook"; //TODO set default for basic employee access
-        String password = "password";
+        String user = "Crook";
+        String password = "crook";
 
         if (accessLevel.equals("MafiaBoss"))
         {
             user = "MafiaBoss";
-            password = "bossPassword";
+            password = "boss";
         }
 
-        //userConnection = DatabaseService.getConnection(user, password);
+        userConnection = DatabaseService.getConnection(user, password);
 
         queryStage = new Stage();
         queryRunning = false;
@@ -96,7 +96,7 @@ public class MainApp extends Application
                     // Show an alert to inform the user
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Warning");
-                    alert.setHeaderText("Operation in Progress");
+                    alert.setHeaderText("Query in Progress");
                     alert.setContentText("Please wait until the background operation finishes.");
                     alert.showAndWait();
                 }
@@ -106,6 +106,11 @@ public class MainApp extends Application
 
     public void launchQueryWindow(String view) throws IOException
     {
+        synchronized (queryRunning)
+        {
+            if (queryRunning) return;
+        }
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/stuptut/mirameble/view/" + view + ".fxml"));
         Scene scene = new Scene(loader.load());
 

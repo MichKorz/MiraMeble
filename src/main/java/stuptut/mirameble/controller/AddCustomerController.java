@@ -19,13 +19,12 @@ public class AddCustomerController extends Controller
     @FXML
     private void addUser()
     {
-        setFlag(!mainApp.queryRunning);
-        /*new Thread(() ->
+        new Thread(() ->
         {
             setFlag(true); // Flag for letting the query do its job in peace
 
             String email = emailField.getText();
-            String query = "INSERT INTO users (email) VALUES (?)";
+            String query = "CALL add_client(?)";
 
             try (PreparedStatement stmt = connection.prepareStatement(query))
             {
@@ -42,6 +41,7 @@ public class AddCustomerController extends Controller
             {
                 setFlag(false);
             }
-        });*/
+        }).start();
+
     }
 }

@@ -24,12 +24,10 @@ public class LoginController extends Controller
     {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        String hashedPassword = null;
-        hashedPassword = "1234"; //TODO REMOOOVEEEEEEEEEEEEEEEEE
-        String salt = null;
-        salt = "POINTLESSSSSSSSSS";
 
-        String accessLevel = "Crook";
+        String hashedPassword = "";
+        String salt = "";
+        String accessLevel = "";
 
         if (username.isEmpty() || password.isEmpty())
         {
@@ -37,16 +35,17 @@ public class LoginController extends Controller
             return;
         }
 
-        String query = "SELECT * FROM login WHERE username = ?";
+        String query = "SELECT * FROM hash_passwords WHERE ID = ?";
 
-        /*try (PreparedStatement stmt = connection.prepareStatement(query))
+        try (PreparedStatement stmt = connection.prepareStatement(query))
         {
-            stmt.setString(1, username);
+            stmt.setInt(1, Integer.parseInt(username));
             ResultSet rs = stmt.executeQuery();
             if (rs.next())
             {
-                hashedPassword = rs.getString("password");
+                hashedPassword = rs.getString("hash");
                 salt = rs.getString("salt");
+                accessLevel = rs.getString("access_level");
             }
             else
             {
@@ -56,8 +55,8 @@ public class LoginController extends Controller
         }
         catch (SQLException e)
         {
-            throw new RuntimeException(e);
-        }*/
+            throw new SQLException(e);
+        }
 
         if (hashedPassword.equals(HashUtil.hashPassword(password, salt)))
         {

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseService
 {
-    private static final String URL = "jdbc:mariadb://localhost:3306/mydatabase";
+    private static final String URL = "jdbc:mariadb://localhost:3306/warehouse";
 
     public static Connection getConnection(String user, String password)
     {

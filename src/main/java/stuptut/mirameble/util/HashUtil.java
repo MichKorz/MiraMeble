@@ -16,7 +16,12 @@ public class HashUtil
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
         SecretKeyFactory factory = SecretKeyFactory.getInstance(ALGORITHM);
         byte[] hash = factory.generateSecret(spec).getEncoded();
-        //return Base64.getEncoder().encodeToString(hash);
-        return "1234";
+        return Base64.getEncoder().encodeToString(hash);
+        //return "1234";
+    }
+
+    public static void main(String[] args) throws Exception
+    {
+        System.out.println(hashPassword(args[0] ,args[1]));
     }
 }
