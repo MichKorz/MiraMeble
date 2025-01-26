@@ -21,10 +21,13 @@ public class AddCustomerController extends Controller
     @FXML
     private GridPane tableClients;
 
+    ResultSetToGridPane setGridPaneClients;
+
     @Override
     public void Initialize(String accessLevel)
     {
         refresh();
+        setGridPaneClients = new ResultSetToGridPane("ID email", tableClients, "SELECT * FROM clients", stage, connection);
     }
 
     @FXML
@@ -37,6 +40,15 @@ public class AddCustomerController extends Controller
                 setFlags(true); // Flag for letting the query do its job in peace
 
                 String email = emailField.getText();
+
+                if(!email.contains("@") || !email.contains("."))
+                {
+                    Platform.runLater(() -> infoArea.setText("Incorrect input " + email + " for field email"));
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                    return;
+                }
+
                 String query = "INSERT INTO clients (email) VALUES (?)";
 
                 try (PreparedStatement stmt = connection.prepareStatement(query))
@@ -66,7 +78,6 @@ public class AddCustomerController extends Controller
         if (mainApp.stageLocks.get(stage).tryLock())
         {
             refreshTable();
-            stage.sizeToScene();
             mainApp.stageLocks.get(stage).unlock();
         }
     }
@@ -76,21 +87,21 @@ public class AddCustomerController extends Controller
         new Thread(() ->
         {
             setFlags(true); // Flag for letting the query do its job in peace
-            String query = "SELECT * FROM clients";
 
-            try (PreparedStatement stmt = connection.prepareStatement(query))
-            {
-                ResultSet rs = stmt.executeQuery();
-                Platform.runLater(() -> ResultSetToGridPane.populateGridPane(rs, tableClients, stage));
-            }
-            catch (SQLException e)
-            {
-                Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
-            }
-            finally
-            {
-                setFlags(false);
-            }
+            Platform.runLater(() -> {
+                try
+                {
+                    setGridPaneClients.populateGridPane();
+                }
+                catch (SQLException e)
+                {
+                    Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
+                }
+                finally
+                {
+                    setFlags(false);
+                }
+            });
         }).start();
     }
 }

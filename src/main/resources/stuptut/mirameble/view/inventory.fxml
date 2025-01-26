@@ -18,14 +18,21 @@
             <Button fx:id="addButton" mnemonicParsing="false" onAction="#addInventory" text="Add Inventory" />
         </children>
     </HBox>
+      <HBox>
+         <children>
+            <TextField fx:id="IDField" prefHeight="25.0" prefWidth="242.0" promptText="Product ID" />
+            <TextField fx:id="insertCountField" prefHeight="25.0" prefWidth="207.0" promptText="Count" />
+            <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertInventory" text="Add Inventory" />
+         </children>
+      </HBox>
     <GridPane fx:id="tableInventory" VBox.vgrow="ALWAYS">
         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS" />
         </columnConstraints>
     </GridPane>
       <GridPane fx:id="tableProducts" VBox.vgrow="ALWAYS">
          <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS" />
          </columnConstraints>
       </GridPane>
     <TextArea fx:id="infoArea" editable="false" wrapText="true" />

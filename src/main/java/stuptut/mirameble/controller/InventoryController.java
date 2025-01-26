@@ -8,13 +8,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class InventoryController extends Controller {
 
     @FXML
     private Button addButton;
+
+    @FXML
+    private TextField IDField;
+    @FXML
+    private TextField insertCountField;
+    @FXML
+    private Button insertButton;
 
     @FXML
     private TextArea infoArea;
@@ -32,10 +38,66 @@ public class InventoryController extends Controller {
     @FXML
     private GridPane tableProducts;
 
+    ResultSetToGridPane setGridPaneInventory;
+    ResultSetToGridPane setGridPaneProducts;
+
     @Override
     public void Initialize(String accessLevel)
     {
         refresh();
+        setGridPaneInventory = new ResultSetToGridPane("ID name manufacturer count", tableInventory, "SELECT ID, name, manufacturer, count FROM inventory JOIN products ON ID_product = ID", stage, connection);
+        setGridPaneProducts= new ResultSetToGridPane("ID name manufacturer", tableProducts, "SELECT * FROM products", stage, connection);
+    }
+
+    @FXML
+    void insertInventory()
+    {
+        Platform.runLater(() -> stage.sizeToScene());
+        stage.sizeToScene();
+        new Thread(() ->
+        {
+            if (mainApp.stageLocks.get(stage).tryLock())
+            {
+                setFlags(true); // Flag for letting the query do its job in peace
+
+                String ID = IDField.getText();
+                String countText = insertCountField.getText();
+                int count, id;
+
+                try
+                {
+                    id = Integer.parseInt(ID);
+                    count = Integer.parseInt(countText);
+                }
+                catch (NumberFormatException e)
+                {
+                    Platform.runLater(() -> infoArea.setText("Incorrect input"));
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                    return;
+                }
+
+                String query = "CALL insert_inventory(?, ?)";
+
+                try (PreparedStatement stmt = connection.prepareStatement(query))
+                {
+                    stmt.setInt(1, id); // Set the name parameter
+                    stmt.setInt(2, count); // Set the name parameter
+                    int rowsAffected = stmt.executeUpdate();
+                    Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
+                }
+                catch (SQLException e)
+                {
+                    Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
+                }
+                finally
+                {
+                    mainApp.refreshWindows();
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                }
+            }
+        }).start();
     }
 
     @FXML
@@ -61,14 +123,10 @@ public class InventoryController extends Controller {
                 catch (NumberFormatException e)
                 {
                     Platform.runLater(() -> infoArea.setText("Incorrect input " + countText + " for field count"));
-                    return;
-                }
-                finally
-                {
                     setFlags(false);
                     mainApp.stageLocks.get(stage).unlock();
+                    return;
                 }
-
 
                 String query = "CALL add_inventory(?, ?, ?)";
 
@@ -99,32 +157,32 @@ public class InventoryController extends Controller {
     {
         if (mainApp.stageLocks.get(stage).tryLock())
         {
-            refreshTable("SELECT ID, name, manufacturer, count FROM inventory JOIN products ON ID_product = ID", tableInventory);
-            refreshTable("SELECT * FROM products", tableProducts);
+            refreshTables();
             mainApp.stageLocks.get(stage).unlock();
         }
     }
 
-    private void refreshTable(String query, GridPane gridPane)
+    private void refreshTables()
     {
-
         new Thread(() ->
         {
             setFlags(true); // Flag for letting the query do its job in peace
 
-            try (PreparedStatement stmt = connection.prepareStatement(query))
-            {
-                ResultSet rs = stmt.executeQuery();
-                Platform.runLater(() -> ResultSetToGridPane.populateGridPane(rs, gridPane, stage));
-            }
-            catch (SQLException e)
-            {
-                Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
-            }
-            finally
-            {
-                setFlags(false);
-            }
+            Platform.runLater(() -> {
+                try
+                {
+                    setGridPaneInventory.populateGridPane();
+                    setGridPaneProducts.populateGridPane();
+                }
+                catch (SQLException e)
+                {
+                    Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
+                }
+                finally
+                {
+                    setFlags(false);
+                }
+            });
         }).start();
     }
 
