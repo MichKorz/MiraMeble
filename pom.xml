@@ -38,6 +38,13 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.5.1</version> <!-- Use the latest version -->
+        </dependency>
+
     </dependencies>
 
     <build>

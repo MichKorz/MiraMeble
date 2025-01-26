@@ -1,5 +1,14 @@
 package stuptut.mirameble.controller;
 
-public class MainController
+import javafx.fxml.FXML;
+
+import java.io.IOException;
+
+public class MainController extends Controller
 {
+    @FXML
+    private void addCustomer() throws IOException
+    {
+        mainApp.launchQueryWindow("addCustomer");
+    }
 }
