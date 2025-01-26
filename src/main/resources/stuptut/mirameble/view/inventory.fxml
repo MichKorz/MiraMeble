@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="291.0" prefWidth="459.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stuptut.mirameble.controller.InventoryController">
+<children>
+    <HBox prefHeight="0.0" prefWidth="459.0">
+        <children>
+            <TextField fx:id="nameField" prefHeight="25.0" prefWidth="152.0" promptText="Name" />
+            <TextField fx:id="manufacturerField" layoutX="10.0" layoutY="10.0" prefHeight="25.0" prefWidth="151.0" promptText="Manufacturer" />
+            <TextField fx:id="countField" layoutX="227.0" layoutY="10.0" prefHeight="25.0" prefWidth="105.0" promptText="Count" />
+            <Button fx:id="addButton" mnemonicParsing="false" onAction="#addInventory" prefHeight="25.0" prefWidth="138.0" text="Add Inventory" />
+        </children>
+    </HBox>
+    <GridPane fx:id="tableInventory" prefHeight="232.0" prefWidth="459.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+    </GridPane>
+      <GridPane fx:id="tableProducts" layoutX="10.0" layoutY="35.0" prefHeight="260.0" prefWidth="459.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+      </GridPane>
+    <TextArea fx:id="infoArea" editable="false" prefHeight="11.0" prefWidth="459.0" />
+</children>
+</VBox>

@@ -16,6 +16,7 @@ import java.sql.Connection;
 public class MainApp extends Application
 {
     private Stage primaryStage;
+    private String accessLevel;
 
     @Override
     public void start(Stage primaryStage)
@@ -72,6 +73,7 @@ public class MainApp extends Application
 
     public void setupUser(String accessLevel)
     {
+        this.accessLevel = accessLevel;
         String user = "Crook";
         String password = "crook";
 
@@ -117,6 +119,7 @@ public class MainApp extends Application
         Controller controller = loader.getController();
         controller.setMainApp(this);
         controller.setConnection(userConnection);
+        controller.Initialize(accessLevel);
 
         queryStage.setScene(scene);
         queryStage.setTitle(view);

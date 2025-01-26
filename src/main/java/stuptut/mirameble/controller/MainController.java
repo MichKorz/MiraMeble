@@ -11,4 +11,10 @@ public class MainController extends Controller
     {
         mainApp.launchQueryWindow("addCustomer");
     }
+
+    @FXML
+    private void inventory() throws IOException
+    {
+        mainApp.launchQueryWindow("inventory");
+    }
 }

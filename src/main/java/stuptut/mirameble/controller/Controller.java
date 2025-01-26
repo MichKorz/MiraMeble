@@ -26,4 +26,6 @@ public class Controller
             mainApp.queryRunning = value;
         }
     }
+
+    public void Initialize(String accessLevel){};
 }
