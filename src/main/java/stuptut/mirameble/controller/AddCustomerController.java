@@ -2,12 +2,12 @@ package stuptut.mirameble.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AddCustomerController extends Controller
@@ -23,9 +23,24 @@ public class AddCustomerController extends Controller
 
     ResultSetToGridPane setGridPaneClients;
 
+    @FXML
+    private Button changeEmail;
+
+    @FXML
+    private TextField newEmailField;
+    @FXML
+    private TextField oldEmailField;
+
+
     @Override
     public void Initialize(String accessLevel)
     {
+        if(accessLevel.equals("Crook"))
+        {
+            changeEmail.setDisable(true);
+            newEmailField.setDisable(true);
+            oldEmailField.setDisable(true);
+        }
         refresh();
         setGridPaneClients = new ResultSetToGridPane("ID email", tableClients, "SELECT * FROM clients", stage, connection);
     }
@@ -70,6 +85,49 @@ public class AddCustomerController extends Controller
             }
         }).start();
 
+    }
+
+    @FXML
+    void changeEmail()
+    {
+        new Thread(() ->
+        {
+            if (mainApp.stageLocks.get(stage).tryLock())
+            {
+                setFlags(true); // Flag for letting the query do its job in peace
+
+                String oldEmail = oldEmailField.getText();
+                String newEmail = newEmailField.getText();
+
+                if(!oldEmail.contains("@") || !oldEmail.contains(".") || !newEmail.contains("@") || !newEmail.contains("."))
+                {
+                    Platform.runLater(() -> infoArea.setText("Incorrect input for changing email fields"));
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                    return;
+                }
+
+                String query = "UPDATE clients SET email = ? WHERE email = ?";
+
+                try (PreparedStatement stmt = connection.prepareStatement(query))
+                {
+                    stmt.setString(1, newEmail); // Set the email parameter
+                    stmt.setString(2, oldEmail); // Set the email parameter
+                    int rowsAffected = stmt.executeUpdate();
+                    Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
+                }
+                catch (SQLException e)
+                {
+                    Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
+                }
+                finally
+                {
+                    mainApp.refreshWindows();
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                }
+            }
+        }).start();
     }
 
     @FXML

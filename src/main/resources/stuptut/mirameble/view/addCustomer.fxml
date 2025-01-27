@@ -10,10 +10,17 @@
 
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stuptut.mirameble.controller.AddCustomerController">
    <children>
-      <HBox prefHeight="16.0" prefWidth="478.0">
+      <HBox prefHeight="0.0" prefWidth="478.0">
          <children>
             <TextField fx:id="emailField" prefHeight="25.0" prefWidth="594.0" promptText="Client's email" />
             <Button fx:id="addButton" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="331.0" text="Add new Client" />
+         </children>
+      </HBox>
+      <HBox prefHeight="0.0" prefWidth="478.0">
+         <children>
+            <TextField fx:id="oldEmailField" prefHeight="25.0" prefWidth="222.0" promptText="Old email" />
+            <TextField fx:id="newEmailField" prefHeight="25.0" prefWidth="208.0" promptText="New email" />
+            <Button fx:id="changeEmail" mnemonicParsing="false" onAction="#changeEmail" prefHeight="25.0" prefWidth="137.0" text="Change Email" />
          </children>
       </HBox>
       <GridPane fx:id="tableClients">

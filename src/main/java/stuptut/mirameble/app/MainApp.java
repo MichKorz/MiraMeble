@@ -2,8 +2,6 @@ package stuptut.mirameble.app;
 
 import javafx.application.Application;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,9 +11,7 @@ import stuptut.mirameble.service.DatabaseService;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -81,6 +77,7 @@ public class MainApp extends Application
 
             Controller controller = loader.getController();
             controller.setMainApp(this);
+            controller.Initialize(accessLevel);
 
             primaryStage.setScene(scene);
             primaryStage.setTitle("Mira Meble");
