@@ -20,6 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MainApp extends Application
 {
     private Stage primaryStage;
+    private int id;
     private String accessLevel;
 
     public final HashMap<Stage, Controller> controllers = new HashMap<>();
@@ -157,5 +158,15 @@ public class MainApp extends Application
         {
             controllers.get(stage).refresh();
         }
+    }
+
+    public void set_id(int id)
+    {
+        this.id = id;
+    }
+
+    public int get_id()
+    {
+        return id;
     }
 }

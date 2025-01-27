@@ -2,6 +2,7 @@ package stuptut.mirameble.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -9,25 +10,31 @@ import javafx.scene.layout.GridPane;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class ProductsController extends Controller
+public class OrdersController extends Controller
 {
     @FXML
-    private TextField IDField;
+    private TextField clientField;
     @FXML
-    private TextField newPriceField;
+    private TextField productField;
+    @FXML
+    private TextField countField;
 
     @FXML
-    private TextField deleteIDField;
+    private TextField deleteOrderField;
 
     @FXML
-    private TextField nameField;
-    @FXML
-    private TextField manufacturerField;
-    @FXML
-    private TextField priceField;
+    private TextField orderField;
 
     @FXML
     private TextArea infoArea;
+
+    @FXML
+    private GridPane tableOrders;
+    ResultSetToGridPane setGridPaneOrders;
+
+    @FXML
+    private GridPane tableClients;
+    ResultSetToGridPane setGridPaneClients;
 
     @FXML
     private GridPane tableProducts;
@@ -37,11 +44,13 @@ public class ProductsController extends Controller
     public void Initialize(String accessLevel)
     {
         refresh();
-        setGridPaneProducts = new ResultSetToGridPane("ID name manufacturer price", tableProducts, "SELECT ID, name, manufacturer, price FROM products JOIN prices ON ID=ID_product", stage, connection);
+        setGridPaneOrders = new ResultSetToGridPane("ID Client_Id Product_ID Count Date_of_Placing", tableOrders, "SELECT * FROM orders", stage, connection);
+        setGridPaneProducts = new ResultSetToGridPane("ID Name Manufacturer Price", tableProducts, "SELECT ID, name, manufacturer, price FROM products JOIN prices ON ID=ID_product", stage, connection);
+        setGridPaneClients = new ResultSetToGridPane("ID email", tableClients, "SELECT * FROM clients", stage, connection);
     }
 
     @FXML
-    private void addProduct()
+    private void addOrder()
     {
         new Thread(() ->
         {
@@ -49,29 +58,32 @@ public class ProductsController extends Controller
             {
                 setFlags(true); // Flag for letting the query do its job in peace
 
-                String name = nameField.getText();
-                String manufacturer = manufacturerField.getText();
-                String priceString = priceField.getText();
-                int price;
+                String client = clientField.getText();
+                String product = productField.getText();
+                String countText = countField.getText();
+                int id_client, id_product, count;
 
-                try {
-                    price = Integer.parseInt(priceString);
+                try
+                {
+                    id_client = Integer.parseInt(client);
+                    id_product = Integer.parseInt(product);
+                    count = Integer.parseInt(countText);
                 }
                 catch (NumberFormatException e)
                 {
-                    Platform.runLater(() -> infoArea.setText("Incorrect input for price" + priceString));
+                    Platform.runLater(() -> infoArea.setText("Incorrect input for adding order"));
                     setFlags(false);
                     mainApp.stageLocks.get(stage).unlock();
                     return;
                 }
 
-                String query = "CALL add_product(?,?,?)";
+                String query = "CALL add_order(?,?,?)";
 
                 try (PreparedStatement stmt = connection.prepareStatement(query))
                 {
-                    stmt.setString(1, name);
-                    stmt.setString(2, manufacturer);
-                    stmt.setInt(3, price);
+                    stmt.setInt(1, id_client);
+                    stmt.setInt(2, id_product);
+                    stmt.setInt(3, count);
                     int rowsAffected = stmt.executeUpdate();
                     Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
                 }
@@ -91,7 +103,7 @@ public class ProductsController extends Controller
     }
 
     @FXML
-    void changePrice()
+    void completeOrder()
     {
         new Thread(() ->
         {
@@ -99,69 +111,69 @@ public class ProductsController extends Controller
             {
                 setFlags(true); // Flag for letting the query do its job in peace
 
-                String ID = IDField.getText();
-                String priceString = newPriceField.getText();
-                int id, price;
-
-                try {
-                    price = Integer.parseInt(priceString);
-                    id = Integer.parseInt(ID);
-                }
-                catch (NumberFormatException e)
-                {
-                    Platform.runLater(() -> infoArea.setText("Incorrect input for Change Price query"));
-                    setFlags(false);
-                    mainApp.stageLocks.get(stage).unlock();
-                    return;
-                }
-
-                String query = "UPDATE prices SET price = ? WHERE ID_product = ?";
-
-                try (PreparedStatement stmt = connection.prepareStatement(query))
-                {
-                    stmt.setInt(1, price);
-                    stmt.setInt(2, id);
-                    int rowsAffected = stmt.executeUpdate();
-                    Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
-                }
-                catch (SQLException e)
-                {
-                    Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
-                }
-                finally
-                {
-                    mainApp.refreshWindows();
-                    setFlags(false);
-                    mainApp.stageLocks.get(stage).unlock();
-                }
-            }
-        }).start();
-    }
-
-    @FXML
-    void deleteProduct()
-    {
-        new Thread(() ->
-        {
-            if (mainApp.stageLocks.get(stage).tryLock())
-            {
-                setFlags(true); // Flag for letting the query do its job in peace
-
-                String ID = deleteIDField.getText();
+                String order = orderField.getText();
                 int id;
 
-                try {
-                    id = Integer.parseInt(ID);
+                try
+                {
+                    id = Integer.parseInt(order);
                 }
                 catch (NumberFormatException e)
                 {
-                    Platform.runLater(() -> infoArea.setText("Incorrect input for id" + ID));
+                    Platform.runLater(() -> infoArea.setText("Incorrect input for completing order"));
                     setFlags(false);
                     mainApp.stageLocks.get(stage).unlock();
                     return;
                 }
 
-                String query = "DELETE FROM products WHERE ID = ?";
+                String query = "CALL complete_order(?, ?)";
+
+                try (PreparedStatement stmt = connection.prepareStatement(query))
+                {
+                    stmt.setInt(1, id);
+                    stmt.setInt(2, mainApp.get_id());
+                    int rowsAffected = stmt.executeUpdate();
+                    Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
+                }
+                catch (SQLException e)
+                {
+                    Platform.runLater(() -> infoArea.setText(e.getMessage()));  //Info, ex. You dont have permissions!
+                }
+                finally
+                {
+                    mainApp.refreshWindows();
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                }
+            }
+        }).start();
+    }
+
+    @FXML
+    void deleteOrder()
+    {
+        new Thread(() ->
+        {
+            if (mainApp.stageLocks.get(stage).tryLock())
+            {
+                setFlags(true); // Flag for letting the query do its job in peace
+
+                String order = deleteOrderField.getText();
+                int id;
+
+                try
+                {
+                    id = Integer.parseInt(order);
+                }
+                catch (NumberFormatException e)
+                {
+                    Platform.runLater(() -> infoArea.setText("Incorrect input for completing order"));
+                    setFlags(false);
+                    mainApp.stageLocks.get(stage).unlock();
+                    return;
+                }
+
+                String query = "DELETE FROM orders WHERE ID = ?";
 
                 try (PreparedStatement stmt = connection.prepareStatement(query))
                 {
@@ -202,7 +214,9 @@ public class ProductsController extends Controller
             Platform.runLater(() -> {
                 try
                 {
+                    setGridPaneOrders.populateGridPane();
                     setGridPaneProducts.populateGridPane();
+                    setGridPaneClients.populateGridPane();
                 }
                 catch (SQLException e)
                 {

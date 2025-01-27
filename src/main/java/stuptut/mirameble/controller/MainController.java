@@ -38,7 +38,13 @@ public class MainController extends Controller
     @FXML
     private void orders() throws IOException
     {
+        mainApp.launchQueryWindow("orders");
+    }
 
+    @FXML
+    private void ordersArchive() throws IOException
+    {
+        mainApp.launchQueryWindow("ordersArchive");
     }
 
     @FXML
@@ -50,6 +56,6 @@ public class MainController extends Controller
     @FXML
     private void manufacturers() throws IOException
     {
-
+        mainApp.launchQueryWindow("manufacturers");
     }
 }

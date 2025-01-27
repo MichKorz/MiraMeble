@@ -2,6 +2,7 @@ package stuptut.mirameble.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -9,39 +10,37 @@ import javafx.scene.layout.GridPane;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class ProductsController extends Controller
+public class ManufacturersController extends Controller
 {
     @FXML
-    private TextField IDField;
-    @FXML
-    private TextField newPriceField;
-
-    @FXML
-    private TextField deleteIDField;
-
+    private TextField countryField;
     @FXML
     private TextField nameField;
+
     @FXML
-    private TextField manufacturerField;
+    private TextField deleteNameField;
+
     @FXML
-    private TextField priceField;
+    private TextField newNameField;
+    @FXML
+    private TextField oldNameField;
 
     @FXML
     private TextArea infoArea;
 
     @FXML
-    private GridPane tableProducts;
-    ResultSetToGridPane setGridPaneProducts;
+    private GridPane tableManufacturers;
+    ResultSetToGridPane setGridPaneClients;
 
     @Override
     public void Initialize(String accessLevel)
     {
         refresh();
-        setGridPaneProducts = new ResultSetToGridPane("ID name manufacturer price", tableProducts, "SELECT ID, name, manufacturer, price FROM products JOIN prices ON ID=ID_product", stage, connection);
+        setGridPaneClients = new ResultSetToGridPane("Name Country", tableManufacturers, "SELECT * FROM manufacturers", stage, connection);
     }
 
     @FXML
-    private void addProduct()
+    private void addManufacturer()
     {
         new Thread(() ->
         {
@@ -49,29 +48,15 @@ public class ProductsController extends Controller
             {
                 setFlags(true); // Flag for letting the query do its job in peace
 
+                String country = countryField.getText();
                 String name = nameField.getText();
-                String manufacturer = manufacturerField.getText();
-                String priceString = priceField.getText();
-                int price;
 
-                try {
-                    price = Integer.parseInt(priceString);
-                }
-                catch (NumberFormatException e)
-                {
-                    Platform.runLater(() -> infoArea.setText("Incorrect input for price" + priceString));
-                    setFlags(false);
-                    mainApp.stageLocks.get(stage).unlock();
-                    return;
-                }
-
-                String query = "CALL add_product(?,?,?)";
+                String query = "INSERT INTO manufacturers (name, country) VALUES (?, ?)";
 
                 try (PreparedStatement stmt = connection.prepareStatement(query))
                 {
                     stmt.setString(1, name);
-                    stmt.setString(2, manufacturer);
-                    stmt.setInt(3, price);
+                    stmt.setString(2, country);
                     int rowsAffected = stmt.executeUpdate();
                     Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
                 }
@@ -91,7 +76,7 @@ public class ProductsController extends Controller
     }
 
     @FXML
-    void changePrice()
+    void updateManufacturer()
     {
         new Thread(() ->
         {
@@ -99,28 +84,15 @@ public class ProductsController extends Controller
             {
                 setFlags(true); // Flag for letting the query do its job in peace
 
-                String ID = IDField.getText();
-                String priceString = newPriceField.getText();
-                int id, price;
+                String oldName = oldNameField.getText();
+                String newName = newNameField.getText();
 
-                try {
-                    price = Integer.parseInt(priceString);
-                    id = Integer.parseInt(ID);
-                }
-                catch (NumberFormatException e)
-                {
-                    Platform.runLater(() -> infoArea.setText("Incorrect input for Change Price query"));
-                    setFlags(false);
-                    mainApp.stageLocks.get(stage).unlock();
-                    return;
-                }
-
-                String query = "UPDATE prices SET price = ? WHERE ID_product = ?";
+                String query = "UPDATE manufacturers SET name = ? WHERE name = ?";
 
                 try (PreparedStatement stmt = connection.prepareStatement(query))
                 {
-                    stmt.setInt(1, price);
-                    stmt.setInt(2, id);
+                    stmt.setString(1, newName);
+                    stmt.setString(2, oldName);
                     int rowsAffected = stmt.executeUpdate();
                     Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
                 }
@@ -139,7 +111,7 @@ public class ProductsController extends Controller
     }
 
     @FXML
-    void deleteProduct()
+    void deleteManufacturer()
     {
         new Thread(() ->
         {
@@ -147,25 +119,13 @@ public class ProductsController extends Controller
             {
                 setFlags(true); // Flag for letting the query do its job in peace
 
-                String ID = deleteIDField.getText();
-                int id;
+                String name = deleteNameField.getText();
 
-                try {
-                    id = Integer.parseInt(ID);
-                }
-                catch (NumberFormatException e)
-                {
-                    Platform.runLater(() -> infoArea.setText("Incorrect input for id" + ID));
-                    setFlags(false);
-                    mainApp.stageLocks.get(stage).unlock();
-                    return;
-                }
-
-                String query = "DELETE FROM products WHERE ID = ?";
+                String query = "DELETE FROM manufacturers WHERE name = ?";
 
                 try (PreparedStatement stmt = connection.prepareStatement(query))
                 {
-                    stmt.setInt(1, id);
+                    stmt.setString(1, name);
                     int rowsAffected = stmt.executeUpdate();
                     Platform.runLater(() -> infoArea.setText(rowsAffected + " rows affected"));
                 }
@@ -202,7 +162,7 @@ public class ProductsController extends Controller
             Platform.runLater(() -> {
                 try
                 {
-                    setGridPaneProducts.populateGridPane();
+                    setGridPaneClients.populateGridPane();
                 }
                 catch (SQLException e)
                 {

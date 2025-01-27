@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stuptut.mirameble.controller.ManufacturersController">
+    <children>
+        <HBox prefHeight="0.0" prefWidth="478.0">
+            <children>
+                <TextField fx:id="nameField" prefHeight="25.0" prefWidth="222.0" promptText="Name" />
+                <TextField fx:id="countryField" prefHeight="25.0" prefWidth="208.0" promptText="Country" />
+                <Button fx:id="addButton" mnemonicParsing="false" onAction="#addManufacturer" prefHeight="25.0" prefWidth="172.0" text="Add Manufacturer" />
+            </children>
+        </HBox>
+        <HBox prefHeight="0.0" prefWidth="478.0">
+            <children>
+                <TextField fx:id="deleteNameField" prefHeight="25.0" prefWidth="348.0" promptText="Name of Manufacturer" />
+                <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteManufacturer" prefHeight="25.0" prefWidth="132.0" text="Delete Manufacturer" />
+            </children>
+        </HBox>
+        <HBox prefHeight="0.0" prefWidth="478.0">
+            <children>
+                <TextField fx:id="oldNameField" prefHeight="25.0" prefWidth="196.0" promptText="Old Name" />
+                <TextField fx:id="newNameField" prefHeight="25.0" prefWidth="204.0" promptText="New Name" />
+                <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateManufacturer" prefHeight="25.0" prefWidth="156.0" text="Update Manufacturer" />
+            </children>
+        </HBox>
+        <GridPane fx:id="tableManufacturers">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" />
+            </columnConstraints>
+        </GridPane>
+        <TextArea fx:id="infoArea" editable="false" prefHeight="0.0" prefWidth="478.0" />
+    </children>
+</VBox>

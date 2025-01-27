@@ -25,6 +25,8 @@ public class LoginController extends Controller
         String username = usernameField.getText();
         String password = passwordField.getText();
 
+        mainApp.set_id(Integer.parseInt(username));
+
         String hashedPassword = "";
         String salt = "";
         String accessLevel = "";

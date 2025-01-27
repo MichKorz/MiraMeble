@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="stuptut.mirameble.view.Orders"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stuptut.mirameble.controller.OrdersController">
+    <children>
+        <HBox prefHeight="0.0" prefWidth="478.0">
+            <children>
+                <TextField fx:id="clientField" prefHeight="25.0" prefWidth="143.0" promptText="Client's ID" />
+                <TextField fx:id="productField" prefHeight="25.0" prefWidth="131.0" promptText="Product's ID" />
+                <TextField fx:id="countField" prefHeight="25.0" prefWidth="135.0" promptText="Count" />
+                <Button fx:id="addButton" mnemonicParsing="false" onAction="#addOrder" prefHeight="25.0" prefWidth="157.0" text="Add Order" />
+            </children>
+        </HBox>
+        <HBox prefHeight="0.0" prefWidth="478.0">
+            <children>
+                <TextField fx:id="orderField" prefHeight="25.0" prefWidth="347.0" promptText="Order's ID" />
+                <Button fx:id="completeOrder" mnemonicParsing="false" onAction="#completeOrder" prefHeight="25.0" prefWidth="137.0" text="Complete Order" />
+            </children>
+        </HBox>
+        <HBox prefHeight="0.0" prefWidth="478.0">
+            <children>
+                <TextField fx:id="deleteOrderField" prefHeight="25.0" prefWidth="348.0" promptText="Order's ID" />
+                <Button fx:id="deleteOrder" mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="137.0" text="Delete Order" />
+            </children>
+        </HBox>
+        <GridPane fx:id="tableOrders">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" />
+            </columnConstraints>
+        </GridPane>
+        <GridPane fx:id="tableProducts">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" />
+            </columnConstraints>
+        </GridPane>
+        <GridPane fx:id="tableClients">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" />
+            </columnConstraints>
+        </GridPane>
+        <TextArea fx:id="infoArea" editable="false" prefHeight="0.0" prefWidth="478.0" />
+    </children>
+</VBox>

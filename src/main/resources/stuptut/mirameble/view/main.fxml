@@ -8,6 +8,7 @@
       <Button fx:id="addCustomer" mnemonicParsing="false" onAction="#addCustomer" text="Clients" VBox.vgrow="ALWAYS" />
       <Button fx:id="inventoryButton" mnemonicParsing="false" onAction="#inventory" text="Inventory" />
       <Button fx:id="ordersButton" mnemonicParsing="false" onAction="#orders" text="Orders" />
+      <Button fx:id="ordersArchiveButton" layoutX="101.0" layoutY="70.0" mnemonicParsing="false" onAction="#ordersArchive" text="Orders Archive" />
       <Button fx:id="productsButton" layoutX="95.0" layoutY="70.0" mnemonicParsing="false" onAction="#products" text="Products" />
       <Button fx:id="manufacturersButton" layoutX="95.0" layoutY="100.0" mnemonicParsing="false" onAction="#manufacturers" text="Manufacturers" />
    </children>
