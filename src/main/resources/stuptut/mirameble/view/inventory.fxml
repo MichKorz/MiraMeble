@@ -35,6 +35,6 @@
             <ColumnConstraints hgrow="ALWAYS" />
          </columnConstraints>
       </GridPane>
-    <TextArea fx:id="infoArea" editable="false" wrapText="true" />
+    <TextArea fx:id="infoArea" editable="false" prefHeight="32.0" prefWidth="541.0" wrapText="true" />
 </children>
 </VBox>
