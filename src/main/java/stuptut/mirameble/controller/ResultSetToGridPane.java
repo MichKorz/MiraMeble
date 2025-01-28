@@ -77,7 +77,10 @@ public class ResultSetToGridPane {
 
     private void headerPressed(String columnName)
     {
-        String newQuery = baseQuery + " ORDER BY " + columnName;
+        String newQuery;
+        if(columnName.equals("Employee")) newQuery = baseQuery + " ORDER BY e.name, e.surname";
+        else if(columnName.equals("Product")) newQuery = baseQuery + " ORDER BY p.name";
+        else newQuery = baseQuery + " ORDER BY " + columnName;
         if(!query.equals(newQuery))
         {
             query = newQuery;

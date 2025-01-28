@@ -13,6 +13,9 @@ public class MainController extends Controller
     @FXML
     private Button manufacturersButton;
 
+    @FXML
+    private Button employeesButton;
+
     @Override
     public void Initialize(String accessLevel)
     {
@@ -20,6 +23,7 @@ public class MainController extends Controller
         {
             productsButton.setDisable(true);
             manufacturersButton.setDisable(true);
+            employeesButton.setDisable(true);
         }
     }
 
@@ -57,5 +61,11 @@ public class MainController extends Controller
     private void manufacturers() throws IOException
     {
         mainApp.launchQueryWindow("manufacturers");
+    }
+
+    @FXML
+    private void employees() throws IOException
+    {
+        mainApp.launchQueryWindow("employees");
     }
 }

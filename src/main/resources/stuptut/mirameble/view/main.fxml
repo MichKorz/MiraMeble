@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="233.0" style="-fx-fill-width: true; -fx-spacing: 5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stuptut.mirameble.controller.MainController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="277.0" prefWidth="233.0" style="-fx-fill-width: true; -fx-spacing: 5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stuptut.mirameble.controller.MainController">
    <children>
-      <Button fx:id="addCustomer" mnemonicParsing="false" onAction="#addCustomer" text="Clients" VBox.vgrow="ALWAYS" />
-      <Button fx:id="inventoryButton" mnemonicParsing="false" onAction="#inventory" text="Inventory" />
-      <Button fx:id="ordersButton" mnemonicParsing="false" onAction="#orders" text="Orders" />
-      <Button fx:id="ordersArchiveButton" layoutX="101.0" layoutY="70.0" mnemonicParsing="false" onAction="#ordersArchive" text="Orders Archive" />
-      <Button fx:id="productsButton" layoutX="95.0" layoutY="70.0" mnemonicParsing="false" onAction="#products" text="Products" />
-      <Button fx:id="manufacturersButton" layoutX="95.0" layoutY="100.0" mnemonicParsing="false" onAction="#manufacturers" text="Manufacturers" />
+      <Button fx:id="addCustomer" mnemonicParsing="false" onAction="#addCustomer" prefWidth="100.0" text="Clients" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets top="30.0" />
+         </VBox.margin></Button>
+      <Button fx:id="inventoryButton" mnemonicParsing="false" onAction="#inventory" prefWidth="100.0" text="Inventory" />
+      <Button fx:id="ordersButton" mnemonicParsing="false" onAction="#orders" prefHeight="25.0" prefWidth="100.0" text="Orders" />
+      <Button fx:id="ordersArchiveButton" layoutX="101.0" layoutY="70.0" mnemonicParsing="false" onAction="#ordersArchive" prefWidth="100.0" text="Orders Archive" />
+      <Button fx:id="manufacturersButton" layoutX="95.0" layoutY="100.0" mnemonicParsing="false" onAction="#manufacturers" prefWidth="100.0" text="Manufacturers" />
+      <Button fx:id="employeesButton" layoutX="80.0" layoutY="160.0" mnemonicParsing="false" onAction="#employees" prefWidth="100.0" text="Employees" />
+      <Button fx:id="productsButton" layoutX="95.0" layoutY="70.0" mnemonicParsing="false" onAction="#products" prefWidth="100.0" text="Products" />
    </children>
 </VBox>

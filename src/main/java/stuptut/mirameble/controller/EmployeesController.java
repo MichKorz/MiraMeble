@@ -6,28 +6,22 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import java.sql.SQLException;
 
-public class OrdersArchiveController extends Controller
+public class EmployeesController extends Controller
 {
     @FXML
     private TextArea infoArea;
 
     @FXML
-    private GridPane tableOrders;
-    ResultSetToGridPane setGridPaneOrders;
-
-    @FXML
-    private GridPane tableArchives;
-    ResultSetToGridPane setGridPaneOrdersArchive;
+    private GridPane tableEmployees;
+    ResultSetToGridPane setGridPaneEmployees;
 
 
     @Override
     public void Initialize(String accessLevel)
     {
         refresh();
-        setGridPaneOrders = new ResultSetToGridPane("ID ID_client ID_product Product count date_of_placing", tableOrders,
-                "SELECT o.ID, o.ID_client, p.ID, p.name, o.count, o.date_of_placing  FROM orders o JOIN products p ON o.ID_product=p.ID", stage, connection);
-        setGridPaneOrdersArchive = new ResultSetToGridPane("ID ID_client ID_product Product Employee count date_of_placing date_of_completion", tableArchives,
-                "SELECT o.ID, o.ID_client, p.ID, p.name, Concat(e.name, ' ', e.surname), o.count, o.date_of_placing, o.date_of_completion  FROM orders_archive o JOIN products p ON o.ID_product=p.ID JOIN employees e ON o.ID_employee=e.ID", stage, connection);
+        setGridPaneEmployees = new ResultSetToGridPane("ID name surname level salary", tableEmployees,
+                "SELECT ID, e.name, surname, level, salary FROM employees e JOIN levels l ON e.level = l.name", stage, connection);
     }
 
     @FXML
@@ -49,8 +43,7 @@ public class OrdersArchiveController extends Controller
             Platform.runLater(() -> {
                 try
                 {
-                    setGridPaneOrders.populateGridPane();
-                    setGridPaneOrdersArchive.populateGridPane();
+                    setGridPaneEmployees.populateGridPane();
                 }
                 catch (SQLException e)
                 {
